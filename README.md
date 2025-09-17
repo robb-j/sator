@@ -131,3 +131,27 @@ When set to `allow_list` only the allowed tokens can be used to create responses
   }
 }
 ```
+
+## Database
+
+Sator is designed to work with a Postgres database or write to the local file system.
+
+Use a `file:` protocol URL to tell Sator the directory you want the file(s) to be written to.
+By default, it will create a `data.ndjson` file in that directory and append all responses into it.
+
+You can also add `?group=token` onto the URL to group the responses by the authorization token that created them.
+
+```json
+{
+  "database": { "url": "file:///home/protagonist/data/" }
+}
+```
+
+Alternatively, you can save files to Postgres by configuring a `postgres:` URL.
+You will also need to run the database migrations using the [CLI](#cli)
+
+```json
+{
+  "database": { "url": "postgres:user:secret@localhost/database" }
+}
+```

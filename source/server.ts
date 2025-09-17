@@ -10,7 +10,7 @@ import {
 } from "gruber";
 import { appConfig } from "./config.ts";
 import { arnie, ResponseStruct } from "./lib.ts";
-import { ResponseRecord, sql } from "./database.ts";
+import { ResponseRecord, database } from "./database.ts";
 
 export const indexRoute = defineRoute({
 	method: "GET",
@@ -59,10 +59,7 @@ export const submitRoute = defineRoute({
 		const token = await assertAuthorization(request);
 		const data = await assertRequestBody(ResponseStruct, request);
 
-		const [record] = await sql<ResponseRecord[]>`
-			INSERT INTO responses ${sql({ token, data })}
-			RETURNING id, created_at, token, data
-		`;
+		const record = await database.write(token, data);
 
 		return Response.json(record, { status: 201 });
 	},
@@ -97,6 +94,6 @@ export async function runServer() {
 
 	arnie.start(async () => {
 		await server.stop();
-		await sql.end();
+		await database.close();
 	});
 }
