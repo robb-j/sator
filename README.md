@@ -25,9 +25,50 @@ You can use the `/app/config.json` file or environment variables to set these va
 | server.url      | string   | ~    | SELF_URL     | http://localhost:3000                 |
 | cors.origins    | string[] | ~    | ~            | []                                    |
 
+## Schema
+
 You also mount your `/app/schema.json` to tell Sator how to validate your HTTP requests.
 It needs to contain a valid [JSON Schema](https://json-schema.org/understanding-json-schema/about)
 which will applied to any inputs.
+
+A simple schema might look like this. Responses are objects that have a string "name" field and a numeric "age" field
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "age": { "type": "number" }
+  }
+}
+```
+
+You can do more complicated things with unions.
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "anyOf": [
+    {
+      "type": "object",
+      "properties": {
+        "type": { "const": "person" },
+        "name": { "type": "string" },
+        "age": { "type": "number" }
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": { "const": "pet" },
+        "name": { "type": "string" },
+        "breed": { "enum": ["cat", "dog", "rabbit"] }
+      }
+    }
+  ]
+}
+```
 
 ## Endpoints
 
