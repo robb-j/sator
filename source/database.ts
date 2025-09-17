@@ -50,7 +50,7 @@ class LocalResponses implements Storage {
 		const grouped = this.url.searchParams.get("group") === "token";
 		const url = new URL(`./${grouped ? token : "data"}.ndjson`, this.url);
 
-		fs.appendFileSync(url, JSON.stringify(record));
+		fs.appendFileSync(url, JSON.stringify(record) + "\n");
 
 		return record;
 	}
