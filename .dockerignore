@@ -1,0 +1,8 @@
+#
+# Files to ignore from the container
+#
+
+.DS_Store
+node_modules
+*.env
+bundle

@@ -1,0 +1,6 @@
+{
+	"authz": {
+		"type": "allow_list",
+		"allowed_values": ["top_secret"]
+	}
+}
