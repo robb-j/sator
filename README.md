@@ -44,6 +44,8 @@ A simple schema might look like this. Responses are objects that have a string "
 }
 ```
 
+> Currently, only basic JSON schema types are supported. more could be added in the future
+
 So your responses might look like this:
 
 > Sator accepts JSON or HTML Form data
