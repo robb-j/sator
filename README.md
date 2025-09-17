@@ -44,6 +44,14 @@ A simple schema might look like this. Responses are objects that have a string "
 }
 ```
 
+So your responses might look like this:
+
+> Sator accepts JSON or HTML Form data
+
+```json
+{ "name": "The Protagonist", age: 42 }
+```
+
 You can do more complicated things with unions.
 
 ```json
@@ -63,11 +71,23 @@ You can do more complicated things with unions.
       "properties": {
         "type": { "const": "pet" },
         "name": { "type": "string" },
-        "breed": { "enum": ["cat", "dog", "rabbit"] }
+        "kind": { "enum": ["cat", "dog", "rabbit"] }
       }
     }
   ]
 }
+```
+
+where responses could be:
+
+```json
+{ "type": "person", "name": "The Protagonist", age: 42 }
+```
+
+or:
+
+```json
+{ "type": "pet", "name": "Hugo", "kind": "dog" }
 ```
 
 ## Endpoints
