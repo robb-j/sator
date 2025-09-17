@@ -49,7 +49,7 @@ So your responses might look like this:
 > Sator accepts JSON or HTML Form data
 
 ```json
-{ "name": "The Protagonist", age: 42 }
+{ "name": "The Protagonist", "age": 42 }
 ```
 
 You can do more complicated things with unions.
@@ -81,7 +81,7 @@ You can do more complicated things with unions.
 where responses could be:
 
 ```json
-{ "type": "person", "name": "The Protagonist", age: 42 }
+{ "type": "person", "name": "The Protagonist", "age": 42 }
 ```
 
 or:
