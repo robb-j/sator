@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import process from "node:process";
 import { getConfiguration, Structure } from "gruber";
 
 const config = getConfiguration();
@@ -18,7 +19,7 @@ const struct = config.object({
 	server: config.object({
 		hostname: config.string({ variable: "HOSTNAME", fallback: "127.0.0.1" }),
 		port: config.number({ variable: "PORT", fallback: 3000 }),
-		url: config.string({
+		url: config.url({
 			variable: "SELF_URL",
 			fallback: "http://localhost:3000",
 		}),
@@ -28,7 +29,7 @@ const struct = config.object({
 	database: config.object({
 		url: config.url({
 			variable: "DATABASE_URL",
-			fallback: "postgres://user:secret@localhost:5432",
+			fallback: new URL("../data/", import.meta.url),
 		}),
 	}),
 
@@ -49,10 +50,12 @@ const struct = config.object({
 
 // Load configuration from a file and check validity
 export async function loadConfig(input: string | URL) {
+	if (fs.existsSync(".env")) process.loadEnvFile(".env");
+
 	const value = await config.load(input, struct);
 
 	// production checks
-	if (value.env === "development") {
+	if (value.env === "production") {
 		if (value.database.url.hostname === "localhost") {
 			throw new Error("database.url not configured");
 		}
