@@ -102,7 +102,12 @@ curl http://sator.example.com/
 curl http://sator.example.com/healthz
 
 # Submit a response
-cat response.json | curl -H "Content-Type: application/json" -X POST --data-binary @- http://sator.example.com/responses
+cat response.json | curl \
+  -X POST \
+  --header "Content-Type: application/json" \
+  --header "Authorization: bearer top_secret" \
+  --data-binary @- \
+  http://sator.example.com/responses
 
 # Check authorization
 curl -H "Authorization: bearer top_secret" http://sator.example.com/me
