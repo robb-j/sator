@@ -43,3 +43,21 @@ export function outputSchema() {
 export const arnie = getTerminator({
 	timeout: appConfig.env === "development" ? 0 : 5_000,
 });
+
+// Get a nested value from an object using a set of keys
+export function getValue(input: string[], value: any) {
+	let current = value;
+	for (const property of input) {
+		if (current === undefined) return undefined;
+		current = current[property];
+	}
+	return current;
+}
+
+// Convert a string to file-safe-ish kebab-case
+export function getSlug(input: string) {
+	return input
+		.toLocaleLowerCase()
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-+|-+$/g, "");
+}

@@ -3,6 +3,7 @@ import process from "node:process";
 import postgres from "postgres";
 import { appConfig } from "./config.ts";
 import { getPostgresMigrator } from "gruber";
+import { getSlug, getValue } from "./lib.ts";
 
 export interface ResponseRecord<T = any> {
 	id: string | number;
@@ -47,10 +48,27 @@ class LocalResponses implements Storage {
 			data,
 		};
 
-		const grouped = this.url.searchParams.get("group") === "token";
-		const url = new URL(`./${grouped ? token : "data"}.ndjson`, this.url);
+		const groupKey = this.url.searchParams.get("group");
+		const format = this.url.searchParams.get("format");
 
-		fs.appendFileSync(url, JSON.stringify(record) + "\n");
+		let value = groupKey
+			? (getValue([groupKey], record) ?? getValue(["data", groupKey], record))
+			: "data";
+
+		// If it is a date, group by day
+		if (value instanceof Date && format === "daily") {
+			value = value.toISOString();
+			if (format === "daily") value = value.slice(0, 10);
+		}
+
+		if (format === "slug") {
+			value = getSlug(value);
+		}
+
+		fs.appendFileSync(
+			new URL(`./${value}.ndjson`, this.url),
+			JSON.stringify(record) + "\n",
+		);
 
 		return record;
 	}

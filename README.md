@@ -141,13 +141,30 @@ Sator is designed to work with a Postgres database or write to the local file sy
 Use a `file:` protocol URL to tell Sator the directory you want the file(s) to be written to.
 By default, it will create a `data.ndjson` file in that directory and append all responses into it.
 
-You can also add `?group=token` onto the URL to group the responses by the authorization token that created them.
+> The URL should end with a trailing slash, `/`
+
+**grouping**
+
+You can group the files based on a value from the response by adding a `?group` search parameter onto the file URL. The value is the key you want to group by. Any validated value from the response can be used along with:
+
+- `id` — the unique id for the response
+- `created_at` — the timestamp of the response, in ISO format
+- `token` — the authenticated token used to created the response
+
+**format**
+
+There is also a `?format` parameter to further refine the grouping, it can be set to:
+
+- `slug` — formats the filename in `kebab-case`
+- `daily` — trims date-based values into a `YYYY-mm-dd`
 
 ```json
 {
   "database": { "url": "file:///home/protagonist/data/" }
 }
 ```
+
+**postgres**
 
 Alternatively, you can save files to Postgres by configuring a `postgres:` URL.
 You will also need to run the database migrations using the [CLI](#cli)
