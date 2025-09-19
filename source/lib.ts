@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { getTerminator, Structure } from "gruber";
+import { Cors, getTerminator, Structure } from "gruber";
 import { appConfig } from "./config.ts";
 
 // TODO: migrate this hack back to Gruber
@@ -42,6 +42,12 @@ export function outputSchema() {
 // A Gruber Terminator to manage the shutdown process
 export const arnie = getTerminator({
 	timeout: appConfig.env === "development" ? 0 : 5_000,
+});
+
+// A cors instance for managing CORS headers on the server
+export const cors = new Cors({
+	origins: appConfig.cors.origins,
+	credentials: true,
 });
 
 // Get a nested value from an object using a set of keys

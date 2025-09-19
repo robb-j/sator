@@ -9,8 +9,8 @@ import {
 	serveHTTP,
 } from "gruber";
 import { appConfig } from "./config.ts";
-import { arnie, ResponseStruct } from "./lib.ts";
-import { ResponseRecord, database } from "./database.ts";
+import { database } from "./database.ts";
+import { arnie, cors, ResponseStruct } from "./lib.ts";
 
 export const indexRoute = defineRoute({
 	method: "GET",
@@ -75,6 +75,14 @@ export const authRoute = defineRoute({
 	},
 });
 
+const corsRoute = defineRoute({
+	method: "OPTIONS",
+	pathname: "*",
+	handler({ request }) {
+		return cors.apply(request, new Response());
+	},
+});
+
 export async function runServer() {
 	const cors = new Cors({
 		origins: appConfig.cors.origins,
@@ -84,7 +92,7 @@ export async function runServer() {
 	const router = new FetchRouter({
 		cors,
 		log: true,
-		routes: [indexRoute, healthzRoute, submitRoute, authRoute],
+		routes: [indexRoute, healthzRoute, submitRoute, authRoute, corsRoute],
 		errorHandler: (error) => console.error(error),
 	});
 
