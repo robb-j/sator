@@ -2,12 +2,12 @@ import {
 	_getRequestBearer,
 	_getRequestCookie,
 	assertRequestBody,
-	Cors,
 	defineRoute,
 	FetchRouter,
 	HTTPError,
 	serveHTTP,
 } from "gruber";
+
 import { appConfig } from "./config.ts";
 import { database } from "./database.ts";
 import { arnie, cors, ResponseStruct } from "./lib.ts";
@@ -75,25 +75,11 @@ export const authRoute = defineRoute({
 	},
 });
 
-const corsRoute = defineRoute({
-	method: "OPTIONS",
-	pathname: "*",
-	handler({ request }) {
-		return cors.apply(request, new Response());
-	},
-});
-
 export async function runServer() {
-	const cors = new Cors({
-		origins: appConfig.cors.origins,
-		credentials: true,
-	});
-
 	const router = new FetchRouter({
 		cors,
 		log: true,
-		routes: [indexRoute, healthzRoute, submitRoute, authRoute, corsRoute],
-		errorHandler: (error) => console.error(error),
+		routes: [indexRoute, healthzRoute, submitRoute, authRoute],
 	});
 
 	const server = await serveHTTP(appConfig.server, (req) =>

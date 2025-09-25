@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import process from "node:process";
-import { getConfiguration, Structure } from "gruber";
+import { getConfiguration, preventExtraction, Structure } from "gruber";
 
 const config = getConfiguration();
 
@@ -61,7 +61,7 @@ export async function loadConfig(input: string | URL) {
 		}
 	}
 
-	return value;
+	return preventExtraction(value);
 }
 
 // Output the current configuration

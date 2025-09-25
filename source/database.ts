@@ -56,7 +56,7 @@ class LocalResponses implements Storage {
 			: "data";
 
 		// If it is a date, group by day
-		if (value instanceof Date && format === "daily") {
+		if (value instanceof Date) {
 			value = value.toISOString();
 			if (format === "daily") value = value.slice(0, 10);
 		}
