@@ -65,6 +65,15 @@ export const submitRoute = defineRoute({
 	},
 });
 
+export const queryRoute = defineRoute({
+	method: "GET",
+	pathname: "/responses",
+	async handler({ request }) {
+		const token = await assertAuthorization(request);
+		return Response.json(await database.list(token));
+	},
+});
+
 export const authRoute = defineRoute({
 	method: "GET",
 	pathname: "/me",
@@ -79,7 +88,7 @@ export async function runServer() {
 	const router = new FetchRouter({
 		cors,
 		log: true,
-		routes: [indexRoute, healthzRoute, submitRoute, authRoute],
+		routes: [indexRoute, healthzRoute, submitRoute, authRoute, queryRoute],
 	});
 
 	const server = await serveHTTP(appConfig.server, (req) =>

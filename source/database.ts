@@ -1,8 +1,10 @@
 import fs from "node:fs";
 import process from "node:process";
 import postgres from "postgres";
+import { getPostgresMigrator, HTTPError } from "gruber";
+import ndjson from "ndjson";
+
 import { appConfig } from "./config.ts";
-import { getPostgresMigrator } from "gruber";
 import { getSlug, getValue } from "./lib.ts";
 
 export interface ResponseRecord<T = any> {
@@ -28,6 +30,7 @@ export async function runMigrations() {
 }
 
 export interface Storage {
+	list(token: string): Promise<ResponseRecord[]>;
 	write(token: string, data: any): Promise<ResponseRecord>;
 	close(): Promise<void>;
 }
@@ -73,6 +76,32 @@ class LocalResponses implements Storage {
 		return record;
 	}
 	async close(): Promise<void> {}
+
+	async list(token: string): Promise<ResponseRecord[]> {
+		const groupKey = this.url.searchParams.get("group");
+
+		if (groupKey && groupKey !== "token") {
+			throw HTTPError.notImplemented("grouping not supported");
+		}
+
+		const filename = groupKey === "token" ? token : "data";
+
+		const records = await readNdjson<ResponseRecord>(
+			new URL(`./${filename}.ndjson`, this.url),
+		);
+		return records.filter((r) => r.token === token);
+	}
+}
+
+function readNdjson<T>(file: string | URL) {
+	return new Promise<T[]>((resolve) => {
+		const records: T[] = [];
+		fs.createReadStream(file)
+			.on("error", () => resolve([]))
+			.pipe(ndjson.parse())
+			.on("data", (r) => records.push(r))
+			.on("end", () => resolve(records));
+	});
 }
 
 class PostgresResponses implements Storage {
@@ -91,9 +120,16 @@ class PostgresResponses implements Storage {
 	async close(): Promise<void> {
 		await this.sql.end();
 	}
+	async list(token: string): Promise<ResponseRecord[]> {
+		return this.sql<ResponseRecord[]>`
+			SELECT id, created_at, token, data
+			FROM responses
+			WHERE token = ${token}
+		`;
+	}
 }
 
-export const database =
+export const database: Storage =
 	appConfig.database.url.protocol === "file:"
 		? new LocalResponses(appConfig.database.url)
 		: new PostgresResponses(appConfig.database.url);

@@ -109,6 +109,10 @@ cat response.json | curl \
   --data-binary @- \
   http://sator.example.com/responses
 
+# List responses
+curl --header "Authorization: bearer top_secret" \
+  http://sator.example.com/responses
+
 # Check authorization
 curl -H "Authorization: bearer top_secret" http://sator.example.com/me
 ```

@@ -11,9 +11,11 @@
 	},
 	"dependencies": {
 		"gruber": "^0.9.0-beta.3",
+		"ndjson": "^2.0.0",
 		"postgres": "^3.4.7"
 	},
 	"devDependencies": {
+		"@types/ndjson": "^2.0.4",
 		"@types/node": "^22.18.5",
 		"prettier": "^3.6.2",
 		"tsx": "^4.20.5",
