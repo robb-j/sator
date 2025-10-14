@@ -94,27 +94,32 @@ or:
 
 ## Endpoints
 
-```bash
-# Check the service is running and get deployment information
-curl http://sator.example.com/
+```js
+// Check the service is running and get deployment information
+const status = await fetch('http://sator.example.com/')
 
-# Check the service health
-curl http://sator.example.com/healthz
+// Check the service health
+const healthz = await fetch('http://sator.example.com/healthz')
 
-# Submit a response
-cat response.json | curl \
-  -X POST \
-  --header "Content-Type: application/json" \
-  --header "Authorization: bearer top_secret" \
-  --data-binary @- \
-  http://sator.example.com/responses
+// Submit a response
+const submit = await fetch('http://sator.example.com/responses', {
+  method: "POST",
+  headers: {
+    'Content-Type': 'application/json'
+    'Authorization': 'bearer top_secret'
+  },
+  body: JSON.stringify({ … })
+})
 
-# List responses
-curl --header "Authorization: bearer top_secret" \
-  http://sator.example.com/responses
+// List responses
+const responses = await fetch('http://sator.example.com/responses', {
+  headers: { 'Authorization': 'bearer top_secret' }
+})
 
-# Check authorization
-curl -H "Authorization: bearer top_secret" http://sator.example.com/me
+// Check authorization
+const authorization = await fetch('http://sator.example.com/me', {
+  headers: { 'Authorization': 'bearer top_secret' }
+})
 ```
 
 ## Authorization
